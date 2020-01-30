@@ -1,0 +1,15 @@
+{
+  "name": "@klausapp/actions",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "format": "prettier --ignore-path ./.gitignore --write '**/*.{js,ts}'"
+  },
+  "workspaces": [
+    "slack-notify-release"
+  ],
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}

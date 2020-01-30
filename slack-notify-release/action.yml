@@ -1,0 +1,20 @@
+name: 'Slack Notify'
+description: 'Notify Slack of releases'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+inputs:
+  repo-token:
+    description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+  token:
+    description: Slack access token
+    required: true
+  channel:
+    description: Slack channel
+    required: false
+    default: '#infra-webhooks'
+  template:
+    description: Message template
+    required: false
+    default: 'released to *<%= environment %>*'
