@@ -36,6 +36,16 @@ async function run(): Promise<void> {
     ];
 
     if (isProdRelease === false) {
+      const previousRelease = await octokit.repos.getLatestRelease({ owner, repo });
+      const comparison = await octokit.repos.compareCommits({
+        owner,
+        repo,
+        base: previousRelease.data.target_commitish,
+        head: sha,
+      });
+      const commits = comparison.data.commits.map(c => `* ${c.commit.message}`).slice(0, 20);
+      const body = encodeURIComponent(commits.join('\n'));
+
       blocks.push({
         type: 'actions',
         elements: [
@@ -43,7 +53,7 @@ async function run(): Promise<void> {
             type: 'button',
             text: { type: 'plain_text', text: 'Create production release' },
             style: 'primary',
-            url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=production-${now}&target=${sha}`,
+            url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=production-${now}&target=${sha}&body=${body}`,
           },
         ],
       });
