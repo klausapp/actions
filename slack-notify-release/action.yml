@@ -14,6 +14,10 @@ inputs:
     description: Slack channel
     required: false
     default: '#infra-webhooks'
+  tag-prefix:
+    description: Prefix for release tag
+    required: false
+    default: ''
   template:
     description: Message template
     required: false

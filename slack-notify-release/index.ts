@@ -36,15 +36,25 @@ async function run(): Promise<void> {
     ];
 
     if (isProdRelease === false) {
-      const previousRelease = await octokit.repos.getLatestRelease({ owner, repo });
-      const comparison = await octokit.repos.compareCommits({
-        owner,
-        repo,
-        base: previousRelease.data.target_commitish,
-        head: sha,
-      });
-      const commits = comparison.data.commits.map(c => `* ${c.commit.message}`).slice(0, 20);
-      const body = encodeURIComponent(commits.join('\n'));
+      const prefix = getInput('tag-prefix');
+      const tags = await octokit.repos.listTags({ owner, repo });
+
+      let body = '';
+      const lastTag = tags.data.find(t => t.name.startsWith(prefix || 'production'));
+
+      if (lastTag) {
+        const comparison = await octokit.repos.compareCommits({
+          owner,
+          repo,
+          base: lastTag.commit.sha,
+          head: sha,
+        });
+        const commits = comparison.data.commits.map(c => `* ${c.commit.message}`).slice(0, 20);
+        body = encodeURIComponent(commits.join('\n'));
+      }
+
+      const tag = ['production', now];
+      if (prefix) tag.unshift(prefix);
 
       blocks.push({
         type: 'actions',
@@ -53,7 +63,9 @@ async function run(): Promise<void> {
             type: 'button',
             text: { type: 'plain_text', text: 'Create production release' },
             style: 'primary',
-            url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=production-${now}&target=${sha}&body=${body}`,
+            url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=${tag.join(
+              '-',
+            )}&target=${sha}&body=${body}`,
           },
         ],
       });
