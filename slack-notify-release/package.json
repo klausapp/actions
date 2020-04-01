@@ -1,6 +1,6 @@
 {
   "name": "slack-notify-release",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
     "build": "ncc build index.ts -m"
@@ -13,8 +13,8 @@
   },
   "devDependencies": {
     "@types/lodash.template": "^4.4.6",
-    "@types/node": "^13.9.0",
-    "@zeit/ncc": "^0.21.1",
+    "@types/node": "^13.9.8",
+    "@zeit/ncc": "^0.22.0",
     "typescript": "^3.8.3"
   }
 }

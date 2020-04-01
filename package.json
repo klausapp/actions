@@ -10,6 +10,6 @@
     "slack-notify-release"
   ],
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.2"
   }
 }

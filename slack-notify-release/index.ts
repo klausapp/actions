@@ -37,19 +37,19 @@ async function run(): Promise<void> {
 
     if (isProdRelease === false) {
       const prefix = getInput('tag-prefix');
-      const tags = await octokit.repos.listTags({ owner, repo });
+      const releases = await octokit.repos.listReleases({ owner, repo });
 
       let body = '';
-      const lastTag = tags.data.find(t => t.name.startsWith(prefix || 'production'));
+      const lastRelease = releases.data.find((t) => t.tag_name.startsWith(prefix || 'production'));
 
-      if (lastTag) {
+      if (lastRelease) {
         const comparison = await octokit.repos.compareCommits({
           owner,
           repo,
-          base: lastTag.commit.sha,
+          base: lastRelease.target_commitish,
           head: sha,
         });
-        const commits = comparison.data.commits.map(c => `* ${c.commit.message}`).slice(0, 20);
+        const commits = comparison.data.commits.map((c) => `* ${c.commit.message}`).slice(0, 20);
         body = encodeURIComponent(commits.join('\n'));
       }
 
