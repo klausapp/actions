@@ -43,6 +43,7 @@ async function run(): Promise<void> {
       const lastRelease = releases.data.find((t) => t.tag_name.startsWith(prefix || 'production'));
 
       if (lastRelease) {
+        console.info(`Found previous release ${lastRelease.tag_name}`);
         const comparison = await octokit.repos.compareCommits({
           owner,
           repo,
@@ -50,6 +51,7 @@ async function run(): Promise<void> {
           head: sha,
         });
         const commits = comparison.data.commits.map((c) => `* ${c.commit.message}`).slice(0, 20);
+        console.info(`Generating list of ${commits.length}.`);
         body = encodeURIComponent(commits.join('\n'));
       }
 

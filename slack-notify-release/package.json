@@ -1,6 +1,6 @@
 {
   "name": "slack-notify-release",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "scripts": {
     "build": "ncc build index.ts -m"
