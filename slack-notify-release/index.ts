@@ -50,7 +50,14 @@ async function run(): Promise<void> {
           base: lastRelease.target_commitish,
           head: sha,
         });
-        const commits = comparison.data.commits.map((c) => `* ${c.commit.message}`).slice(0, 20);
+        const commitPrefixRgx = /^(?:\w+)(?:\((\w+)\)\:)/i;
+        const commits = comparison.data.commits
+          .filter((c) => {
+            const prefixMatches = c.commit.message.match(commitPrefixRgx);
+            return prefixMatches ? prefixMatches[0] === prefix : true;
+          })
+          .map((c) => `* ${c.commit.message}`)
+          .slice(0, 20);
         console.info(`Generating list of ${commits.length}.`);
         body = encodeURIComponent(commits.join('\n'));
       }
