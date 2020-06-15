@@ -54,7 +54,7 @@ async function run(): Promise<void> {
         const commits = comparison.data.commits
           .filter((c) => {
             const prefixMatches = c.commit.message.match(commitPrefixRgx);
-            return prefixMatches ? prefixMatches[0] === prefix : true;
+            return prefixMatches ? prefixMatches[1] === prefix : true;
           })
           .map((c) => `* ${c.commit.message}`)
           .slice(0, 20);
