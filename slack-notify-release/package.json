@@ -6,7 +6,7 @@
     "build": "ncc build index.ts -m"
   },
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^2.1.1",
     "@slack/web-api": "^5.8.1",
     "lodash.template": "^4.5.0"
