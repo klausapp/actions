@@ -1,5 +1,5 @@
 import { setFailed, getInput } from '@actions/core';
-import github, { context } from '@actions/github';
+import github from '@actions/github';
 import { WebClient, ActionsBlock, SectionBlock, ContextBlock } from '@slack/web-api';
 import template from 'lodash.template';
 
@@ -7,10 +7,10 @@ const now = Math.round(Date.now() / 1000);
 
 async function run(): Promise<void> {
   try {
-    const { sha, payload } = context;
-    const isProdRelease = context.eventName === 'release';
+    const { sha, payload } = github.context;
+    const isProdRelease = github.context.eventName === 'release';
     const environment = isProdRelease ? 'production' : 'staging';
-    const { owner, repo } = context.repo;
+    const { owner, repo } = github.context.repo;
 
     const octokit = github.getOctokit(getInput('repo-token'));
     const commit = await octokit.repos.getCommit({ owner, repo, ref: sha });
@@ -22,7 +22,10 @@ async function run(): Promise<void> {
     let blocks: (SectionBlock | ActionsBlock | ContextBlock)[] = [
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: `${commitLink}\n${compiledTemplate({ payload, context, environment })}` },
+        text: {
+          type: 'mrkdwn',
+          text: `${commitLink}\n${compiledTemplate({ payload, context: github.context, environment })}`,
+        },
       },
       {
         type: 'context',
