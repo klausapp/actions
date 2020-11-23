@@ -1,5 +1,5 @@
 import { setFailed, getInput } from '@actions/core';
-import { context, GitHub } from '@actions/github';
+import github, { context } from '@actions/github';
 import { WebClient, ActionsBlock, SectionBlock, ContextBlock } from '@slack/web-api';
 import template from 'lodash.template';
 
@@ -12,7 +12,7 @@ async function run(): Promise<void> {
     const environment = isProdRelease ? 'production' : 'staging';
     const { owner, repo } = context.repo;
 
-    const octokit = new GitHub(getInput('repo-token'));
+    const octokit = github.getOctokit(getInput('repo-token'));
     const commit = await octokit.repos.getCommit({ owner, repo, ref: sha });
     const commitLink = `<${commit.data.html_url}|${payload.repository?.name}@${sha.substring(0, 7)}> - ${
       commit.data.commit.message
@@ -74,7 +74,7 @@ async function run(): Promise<void> {
             style: 'primary',
             url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=${tag.join(
               '-',
-            )}&target=${sha}&body=${body}`,
+            )}&target=${sha}&body=${body}`.substring(0, 3000),
           },
         ],
       });
