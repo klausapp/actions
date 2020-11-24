@@ -1,5 +1,5 @@
 import { setFailed, getInput } from '@actions/core';
-import github from '@actions/github';
+import * as github from '@actions/github';
 import { WebClient, ActionsBlock, SectionBlock, ContextBlock } from '@slack/web-api';
 import template from 'lodash.template';
 
