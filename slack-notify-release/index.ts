@@ -13,7 +13,7 @@ async function run(): Promise<void> {
     const { owner, repo } = github.context.repo;
 
     const octokit = github.getOctokit(getInput('repo-token'));
-    const commit = await octokit.repos.getCommit({ owner, repo, ref: sha });
+    const commit = await octokit.rest.repos.getCommit({ owner, repo, ref: sha });
     const commitLink = `<${commit.data.html_url}|${payload.repository?.name}@${sha.substring(0, 7)}> - ${
       commit.data.commit.message
     }`;
@@ -40,14 +40,14 @@ async function run(): Promise<void> {
 
     if (isProdRelease === false) {
       const prefix = getInput('tag-prefix');
-      const releases = await octokit.repos.listReleases({ owner, repo });
+      const releases = await octokit.rest.repos.listReleases({ owner, repo });
 
       let body = '';
       const lastRelease = releases.data.find((t) => t.tag_name.startsWith(prefix || 'production'));
 
       if (lastRelease) {
         console.info(`Found previous release ${lastRelease.tag_name}`);
-        const comparison = await octokit.repos.compareCommits({
+        const comparison = await octokit.rest.repos.compareCommits({
           owner,
           repo,
           base: lastRelease.target_commitish,
@@ -60,7 +60,7 @@ async function run(): Promise<void> {
             return prefixMatches ? prefixMatches[1] === prefix : true;
           })
           .map((c) => `* ${c.commit.message}`)
-          .slice(0, 20);
+          .slice(0, 40);
         console.info(`Generating list of ${commits.length}.`);
         body = encodeURIComponent(commits.join('\n'));
       }
@@ -88,7 +88,7 @@ async function run(): Promise<void> {
     const channel = getInput('channel');
     await slack.chat.postMessage({ channel, blocks, text: 'Release', username: 'Release', icon_emoji: ':rocket:' });
     console.log(`Notified to ${channel}`);
-  } catch (error) {
+  } catch (error: any) {
     setFailed(error.message);
   }
 }
