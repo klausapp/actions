@@ -49,6 +49,9 @@ async function run(): Promise<void> {
         target_commitish: sha,
       });
 
+      const title = encodeURIComponent(notes.data.name);
+      const body = encodeURIComponent(notes.data.body);
+
       blocks.push({
         type: 'actions',
         elements: [
@@ -56,7 +59,7 @@ async function run(): Promise<void> {
             type: 'button',
             text: { type: 'plain_text', text: 'Create production release' },
             style: 'primary',
-            url: `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${notes.data.name}&body=${notes.data.body}`,
+            url: `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${title}&body=${body}`,
           },
         ],
       });
