@@ -3,8 +3,6 @@ import * as github from '@actions/github';
 import { WebClient, ActionsBlock, SectionBlock, ContextBlock } from '@slack/web-api';
 import template from 'lodash.template';
 
-const now = Math.round(Date.now() / 1000);
-
 async function run(): Promise<void> {
   try {
     const { sha, payload } = github.context;
@@ -39,34 +37,17 @@ async function run(): Promise<void> {
     ];
 
     if (isProdRelease === false) {
+      const tagParts = ['production', Math.round(Date.now() / 1000)];
       const prefix = getInput('tag-prefix');
-      const releases = await octokit.rest.repos.listReleases({ owner, repo });
+      if (prefix) tagParts.unshift(prefix);
+      const tag = tagParts.join('-');
 
-      let body = '';
-      const lastRelease = releases.data.find((t) => t.tag_name.startsWith(prefix || 'production'));
-
-      if (lastRelease) {
-        console.info(`Found previous release ${lastRelease.tag_name}`);
-        const comparison = await octokit.rest.repos.compareCommits({
-          owner,
-          repo,
-          base: lastRelease.target_commitish,
-          head: sha,
-        });
-        const commitPrefixRgx = /^(?:\w+)(?:\((\w+)\)\:)/i;
-        const commits = comparison.data.commits
-          .filter((c) => {
-            const prefixMatches = c.commit.message.match(commitPrefixRgx);
-            return prefixMatches ? prefixMatches[1] === prefix : true;
-          })
-          .map((c) => `* ${c.commit.message}`)
-          .slice(0, 40);
-        console.info(`Generating list of ${commits.length}.`);
-        body = encodeURIComponent(commits.join('\n'));
-      }
-
-      const tag = ['production', now];
-      if (prefix) tag.unshift(prefix);
+      const notes = await octokit.rest.repos.generateReleaseNotes({
+        owner,
+        repo,
+        tag_name: tag,
+        target_commitish: sha,
+      });
 
       blocks.push({
         type: 'actions',
@@ -75,9 +56,7 @@ async function run(): Promise<void> {
             type: 'button',
             text: { type: 'plain_text', text: 'Create production release' },
             style: 'primary',
-            url: `https://github.com/${payload.repository?.full_name}/releases/new?tag=${tag.join(
-              '-',
-            )}&target=${sha}&body=${body}`.substring(0, 3000),
+            url: `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${notes.data.name}&body=${notes.data.body}`,
           },
         ],
       });

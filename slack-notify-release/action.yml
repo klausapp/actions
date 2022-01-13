@@ -1,8 +1,8 @@
 name: 'Slack Notify'
 description: 'Notify Slack of releases'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'node16'
+  main: 'index.js'
 inputs:
   repo-token:
     description: 'Token for the repo. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
