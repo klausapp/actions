@@ -50,7 +50,14 @@ async function run(): Promise<void> {
       });
 
       const title = encodeURIComponent(notes.data.name);
-      const body = encodeURIComponent(notes.data.body);
+
+      // Remove the generator comment and shorten pull request links with autorefs
+      const body = encodeURIComponent(
+        notes.data.body
+          .replace(/<!--.*-->/, '')
+          .replace(/https:\/\/github.com\/.*\/pull\//g, '#')
+          .trim(),
+      );
       const url = `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${title}&body=${body}`;
 
       blocks.push({

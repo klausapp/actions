@@ -1,6 +1,6 @@
 {
   "name": "slack-notify-release",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "private": true,
   "scripts": {
     "build": "esbuild --bundle --minify --platform=node --target=node16 --outfile=./index.js ./index.ts"
