@@ -6,7 +6,7 @@
     "build": "esbuild --bundle --minify --platform=node --target=node16 --outfile=./index.js ./index.ts"
   },
   "dependencies": {
-    "@actions/core": "^1.6.0",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^5.0.0",
     "@slack/web-api": "^6.5.1",
     "lodash.template": "^4.5.0"
