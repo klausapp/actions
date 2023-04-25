@@ -42,23 +42,14 @@ async function run(): Promise<void> {
       if (prefix) tagParts.unshift(prefix);
       const tag = tagParts.join('-');
 
-      const notes = await octokit.rest.repos.generateReleaseNotes({
-        owner,
-        repo,
-        tag_name: tag,
-        target_commitish: sha,
-      });
-
-      const title = encodeURIComponent(notes.data.name);
-
-      // Remove the generator comment and shorten pull request links with autorefs
-      const body = encodeURIComponent(
-        notes.data.body
-          .replace(/<!--.*-->/, '')
-          .replace(/https:\/\/github.com\/.*\/pull\//g, '#')
-          .trim(),
-      );
-      const url = `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${title}&body=${body}`;
+      const body = encodeURIComponent(`
+<!--
+1. "Generate release notes" from top-right.
+2. Post the "Preview" tab of the notes into your dev channel for feedback.
+3. 🚨 CRITICAL! Double-check if any change also has a release dependency (api, pump or services etc).
+-->
+      `);
+      const url = `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${tag}&body=${body}`;
 
       blocks.push({
         type: 'actions',
