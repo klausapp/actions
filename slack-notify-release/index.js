@@ -37,7 +37,7 @@ ${d({payload:i,context:ya.context,environment:s})}`}},{type:"context",elements:i
 2. Post the "Preview" tab of the notes into your dev channel for feedback.
 3. \u{1F6A8} CRITICAL! Double-check if any change also has a release dependency (api, pump or services etc).
 -->
-      `).trim(),q=`https://github.com/${r}/${p}/releases/new?tag=${b}&target=${a}&title=${b}&body=${A}`;m.push({type:"actions",elements:[{type:"button",text:{type:"plain_text",text:"Create production release"},style:"primary",url:q.substring(0,3e3)}]})}let f=(0,na.getInput)("token"),h=new d2.WebClient(f),g=(0,na.getInput)("channel");await h.chat.postMessage({channel:g,blocks:m,text:"Release",username:"Release",icon_emoji:":rocket:"}),console.log(`Notified to ${g}`)}catch(a){(0,na.setFailed)(a.message)}}V8();
+      `.trim()),q=`https://github.com/${r}/${p}/releases/new?tag=${b}&target=${a}&title=${b}&body=${A}`;m.push({type:"actions",elements:[{type:"button",text:{type:"plain_text",text:"Create production release"},style:"primary",url:q.substring(0,3e3)}]})}let f=(0,na.getInput)("token"),h=new d2.WebClient(f),g=(0,na.getInput)("channel");await h.chat.postMessage({channel:g,blocks:m,text:"Release",username:"Release",icon_emoji:":rocket:"}),console.log(`Notified to ${g}`)}catch(a){(0,na.setFailed)(a.message)}}V8();
 /*! Bundled license information:
 
 is-plain-object/dist/is-plain-object.js:

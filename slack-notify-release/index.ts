@@ -42,13 +42,15 @@ async function run(): Promise<void> {
       if (prefix) tagParts.unshift(prefix);
       const tag = tagParts.join('-');
 
-      const body = encodeURIComponent(`
+      const body = encodeURIComponent(
+        `
 <!--
 1. "Generate release notes" from top-right.
 2. Post the "Preview" tab of the notes into your dev channel for feedback.
 3. 🚨 CRITICAL! Double-check if any change also has a release dependency (api, pump or services etc).
 -->
-      `).trim();
+      `.trim(),
+      );
       const url = `https://github.com/${owner}/${repo}/releases/new?tag=${tag}&target=${sha}&title=${tag}&body=${body}`;
 
       blocks.push({
